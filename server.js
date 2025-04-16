@@ -251,6 +251,16 @@ app.get("/admin/stats", verifyToken, async (req, res) => {
     }
 });
 
+const path = require("path");
+
+// Statik dosyaları sun
+app.use(express.static(path.join(__dirname)));
+
+// Ana sayfa isteği geldiğinde index.html gönder
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
 // Sunucuyu başlat
 app.listen(port, () => {
     console.log(`✅ Server running on port ${port}`);
