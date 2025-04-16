@@ -19,14 +19,14 @@
 </head>
 <body>
 <div class="container">
-    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+    <button class="theme-toggle" id="toggleThemeBtn">🌓 Toggle Theme</button>
     <div class="login-area" id="login-area">
         <img src="memex-banner.png" alt="MEMEX Banner" style="width:100%;border-radius:12px;margin-bottom:16px;" />
         <h2>Welcome to MEMEX</h2>
         <input type="text" id="wallet" placeholder="Your Wallet Address" />
         <input type="password" id="admin-pass" placeholder="Admin Password" style="display:none;" />
 
-        <button class="login-btn" onclick="login()">Enter Voting Platform</button>
+        <button class="login-btn" id="loginBtn">Enter Voting Platform</button>
         <div class="social-buttons">
             <a href="https://x.com/memexairdrop" target="_blank" class="x-btn">🔷 X</a>
             <a href="https://t.me/MemeXGloball" target="_blank" class="tg-btn">📢 Telegram</a>
@@ -43,7 +43,7 @@
         <input type="datetime-local" id="new-start" />
         <input type="datetime-local" id="new-end" />
         <div id="option-wrapper"></div>
-        <button onclick="createPoll()">Submit</button>
+        <button id="createPollBtn">Submit</button>
     </div>
     <h1 id="main-title" class="main-title" style="display: none;">
         <span class="emoji">🗳️</span> Community Decision-Making <br>

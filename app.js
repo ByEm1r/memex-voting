@@ -6,6 +6,9 @@ const ADMIN_WALLET = "xadminmemexgiris30T";
 const ADMIN_PASS = "memexsifre123";
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("createPollBtn").addEventListener("click", createPoll);
+    document.getElementById("toggleThemeBtn").addEventListener("click", toggleTheme);
     const walletInput = document.getElementById("wallet");
     const pass = document.getElementById("admin-pass");
 
@@ -47,7 +50,7 @@ function showToast(msg, type = "success") {
 
 // Giriş (Admin + Kullanıcı)
 async function login() {
-    const wallet = walletInput.value.trim();
+    const wallet = document.getElementById("wallet").value.trim();
     const adminPass = document.getElementById("admin-pass").value;
 
     // reCAPTCHA v3 token alma
@@ -193,7 +196,7 @@ async function loadPolls() {
            ${!isActive
             ? `<p class="poll-ended">⏰ This poll has ended.</p>`
             : (poll.options || []).map(option => `
-    <button class="vote-btn" onclick="vote(${poll.id}, \`${option}\`, this)">
+    <button class="vote-btn" data-id="${poll.id}" data-option="${option}">
         🗳️ ${option}
     </button>
 `).join("")
@@ -201,13 +204,13 @@ async function loadPolls() {
 
 
             <canvas id="chart-${poll.id}" height="100"></canvas>
-            <button class="modern-btn" onclick="sharePoll(${poll.id})">📤 Share</button>
-            ${isAdmin ? `
-            <div class="admin-controls">
-                <button class="modern-btn" onclick="editPoll(${poll.id})">✏️ Düzenle</button>
-                <button class="modern-btn" onclick="deletePoll(${poll.id})">🗑️ Sil</button>
-                <button class="modern-btn" onclick="viewStats(${poll.id})">📊 İstatistikler</button>
-            </div>` : ""}
+           <button class="action-btn" data-action="share" data-id="${poll.id}">📤 Share</button>
+${isAdmin ? `
+<div class="admin-controls">
+    <button class="action-btn" data-action="edit" data-id="${poll.id}">✏️ Düzenle</button>
+    <button class="action-btn" data-action="delete" data-id="${poll.id}">🗑️ Sil</button>
+    <button class="action-btn" data-action="stats" data-id="${poll.id}">📊 İstatistikler</button>
+</div>` : ""}
         `;
         container.appendChild(div);
         await loadResults(poll.id);
@@ -304,7 +307,7 @@ function editPoll(id) {
         <input type="text" id="edit-image" placeholder="Yeni Görsel URL" />
         <input type="datetime-local" id="edit-start" />
         <input type="datetime-local" id="edit-end" />
-        <button onclick="submitEdit(${id})">💾 Kaydet</button>
+        <button id="submitEditBtn-${id}">💾 Kaydet</button>
     `;
     createModal(content);
 }
@@ -340,7 +343,7 @@ async function submitEdit(id) {
 async function deletePoll(id) {
     if (!confirm("Bu anketi silmek istediğinize emin misiniz?")) return;
 
-    const res = await fetch(`hhttps://memex-voting.onrender.com/deletePoll/${id}`, {
+    const res = await fetch(`https://memex-voting.onrender.com/deletePoll/${id}`, {
         method: "DELETE",
         headers: {
             Authorization: "Bearer " + token
