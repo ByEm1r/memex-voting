@@ -52,42 +52,52 @@ async function login() {
 
     // reCAPTCHA v3 token alma
     const captcha = await grecaptcha.execute('6LdN5RkrAAAAAK9BReXZhOXUnURMIjaRKh6cNSmj', { action: 'login' });
+    console.log("captcha:", captcha); // ✅ CAPTCHA çıktısını görmek için
 
+    // Admin şifresi kontrolü
     if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
         return showToast("Wrong admin password", "error");
     }
 
+    // Wallet format kontrolü
     if (!/^x[a-zA-Z0-9]{20,60}$/.test(wallet) && wallet !== "xadminmemexgiris30T") {
         return showToast("Invalid Omni XEP wallet address", "error");
     }
 
-    const res = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: wallet, captcha })
-    });
+    try {
+        const res = await fetch("https://memex-voting.onrender.com/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ walletAddress: wallet, captcha })
+        });
 
-    const data = await res.json();
-    if (data.success) {
-        token = data.token;
-        isAdmin = wallet === "xadminmemexgiris30T";
+        const data = await res.json();
+        if (data.success) {
+            token = data.token;
+            isAdmin = wallet === "xadminmemexgiris30T";
 
-        document.getElementById("login-area").style.display = "none";
-        document.getElementById("main-title").style.display = "block";
-        if (isAdmin) {
-            document.getElementById("create-section").style.display = "block";
-            renderOptionInputs();
-            loadStats();
+            document.getElementById("login-area").style.display = "none";
+            document.getElementById("main-title").style.display = "block";
+
+            if (isAdmin) {
+                document.getElementById("create-section").style.display = "block";
+                renderOptionInputs();
+                loadStats();
+            } else {
+                document.getElementById("create-section").style.display = "none";
+            }
+
+            showToast(`Welcome ${wallet.slice(0, 6)}...${wallet.slice(-4)}`);
+            loadPolls();
         } else {
-            document.getElementById("create-section").style.display = "none";
+            showToast("Login failed: " + (data.error || "Unknown error"), "error");
         }
-
-        showToast(`Welcome ${wallet.slice(0, 6)}...${wallet.slice(-4)}`);
-        loadPolls();
-    } else {
-        showToast("Login failed: " + (data.error || "Unknown error"), "error");
+    } catch (err) {
+        console.error("Login fetch error:", err.message);
+        showToast("Network error during login", "error");
     }
 }
+
 // Yeni anket oluştur
 async function createPoll() {
     const question = document.getElementById("new-question").value;
