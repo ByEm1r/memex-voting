@@ -14,6 +14,18 @@ const { body, validationResult } = require("express-validator");
 const app = express();
 const port = process.env.PORT || 3001;
 
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                imgSrc: ["'self'", "data:", "https://i.imgur.com", "https://r.resimlink.com"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+            },
+        },
+    })
+);
+
 // Middleware
 app.use(helmet());
 app.use(cors());
@@ -161,14 +173,9 @@ app.post(
             return res.status(400).json({ error: errors.array()[0].msg });
         }
 
-        const {
-            question,
-            description,
-            image_url,
-            start_time,
-            end_time,
-            options
-        } = req.body;
+        // ✅ GÖNDERİLEN GÖRSEL LINKİNE BAKALIM
+        const { question, description, image_url, start_time, end_time, options } = req.body;
+        console.log("📷 image_url:", image_url);
 
         // ✅ Seçenekler kontrolü
         if (!Array.isArray(options) || options.length < 2) {
@@ -190,7 +197,7 @@ app.post(
                     image_url || null,
                     start_time || new Date(),
                     end_time || null,
-                    formattedOptions // ✅ JSON değil, PostgreSQL array literal
+                    formattedOptions
                 ]
             );
 
@@ -201,6 +208,7 @@ app.post(
         }
     }
 );
+
 
 // Anket silme
 app.delete("/deletePoll/:id", verifyToken, async (req, res) => {

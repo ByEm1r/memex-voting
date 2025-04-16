@@ -214,9 +214,35 @@ ${isAdmin ? `
         `;
         container.appendChild(div);
         await loadResults(poll.id);
+
+// ✅ Oy verme butonları (🗳️)
+        div.querySelectorAll(".vote-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const pollId = btn.getAttribute("data-id");
+                const option = btn.getAttribute("data-option");
+                vote(pollId, option, btn); // ⬅️ Oy verme fonksiyonu
+            });
+        });
+
+// ✅ Sadece bu div içindeki butonlara event ekle
+        div.querySelectorAll(".action-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const action = btn.getAttribute("data-action");
+                const pollId = btn.getAttribute("data-id");
+
+                if (action === "edit") {
+                    editPoll(pollId);
+                } else if (action === "delete") {
+                    deletePoll(pollId);
+                } else if (action === "stats") {
+                    viewStats(pollId);
+                } else if (action === "share") {
+                    sharePoll(pollId);
+                }
+            });
+        });
     }
 }
-
 // Anket sonuçlarını yükle
 async function loadResults(pollId) {
     const res = await fetch(`/results/${pollId}`);
