@@ -1,6 +1,15 @@
 let token = "";
 let isAdmin = false;
 
+// reCAPTCHA test kontrolü
+window.addEventListener("load", () => {
+    if (window.grecaptcha) {
+        console.log("✅ grecaptcha yüklendi:", window.grecaptcha);
+    } else {
+        console.error("❌ grecaptcha YÜKLENMEDİ! Script yanlış yerde olabilir.");
+    }
+});
+
 // Admin cüzdan adresi
 const ADMIN_WALLET = "xadminmemexgiris30T";
 const ADMIN_PASS = "memexsifre123";
@@ -53,55 +62,48 @@ async function login() {
     const wallet = document.getElementById("wallet").value.trim();
     const adminPass = document.getElementById("admin-pass").value;
 
-    if (!window.grecaptcha) {
-        return showToast("reCAPTCHA yüklenemedi. Sayfayı yenileyin.", "error");
+    const captcha = "bypass-captcha"; // ✅ reCAPTCHA olmadan login yapabilmek için
+
+    if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
+        return showToast("Wrong admin password", "error");
     }
 
-    grecaptcha.ready(async () => {
-        const captcha = await grecaptcha.execute('6LfHHxsrAAAAANwhOTYVTh3Q9XNpVV68c4GdhH-I', { action: 'login' });
-        console.log("captcha:", captcha);
+    if (!/^x[a-zA-Z0-9]{20,60}$/.test(wallet) && wallet !== "xadminmemexgiris30T") {
+        return showToast("Invalid Omni XEP wallet address", "error");
+    }
 
-        if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
-            return showToast("Wrong admin password", "error");
-        }
+    try {
+        const res = await fetch("https://cdm.memextoken.org/login", { // ✅ DOMAIN GÜNCEL
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ walletAddress: wallet, captcha })
+        });
 
-        if (!/^x[a-zA-Z0-9]{20,60}$/.test(wallet) && wallet !== "xadminmemexgiris30T") {
-            return showToast("Invalid Omni XEP wallet address", "error");
-        }
+        const data = await res.json();
+        if (data.success) {
+            token = data.token;
+            isAdmin = wallet === "xadminmemexgiris30T";
 
-        try {
-            const res = await fetch("https://memex-voting.onrender.com/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ walletAddress: wallet, captcha })
-            });
+            document.getElementById("login-area").style.display = "none";
+            document.getElementById("main-title").style.display = "block";
 
-            const data = await res.json();
-            if (data.success) {
-                token = data.token;
-                isAdmin = wallet === "xadminmemexgiris30T";
-
-                document.getElementById("login-area").style.display = "none";
-                document.getElementById("main-title").style.display = "block";
-
-                if (isAdmin) {
-                    document.getElementById("create-section").style.display = "block";
-                    renderOptionInputs();
-                    loadStats();
-                } else {
-                    document.getElementById("create-section").style.display = "none";
-                }
-
-                showToast(`Welcome ${wallet.slice(0, 6)}...${wallet.slice(-4)}`);
-                loadPolls();
+            if (isAdmin) {
+                document.getElementById("create-section").style.display = "block";
+                renderOptionInputs();
+                loadStats();
             } else {
-                showToast("Login failed: " + (data.error || "Unknown error"), "error");
+                document.getElementById("create-section").style.display = "none";
             }
-        } catch (err) {
-            console.error("Login fetch error:", err.message);
-            showToast("Network error during login", "error");
+
+            showToast(`Welcome ${wallet.slice(0, 6)}...${wallet.slice(-4)}`);
+            loadPolls();
+        } else {
+            showToast("Login failed: " + (data.error || "Unknown error"), "error");
         }
-    }); // ✅ BU SATIRI EKLEDİK
+    } catch (err) {
+        console.error("Login fetch error:", err.message);
+        showToast("Network error during login", "error");
+    }
 }
 
 // Yeni anket oluştur

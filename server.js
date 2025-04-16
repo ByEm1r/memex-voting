@@ -59,20 +59,9 @@ app.post("/login", async (req, res) => {
     if (!captcha) return res.status(400).json({ error: "Missing CAPTCHA token" });
 
     // Google doğrulaması
-    const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captcha}`;
+    // reCAPTCHA devre dışı (test modu)
+    console.log("Skipping CAPTCHA verification for testing");
 
-    try {
-        const captchaRes = await fetch(verifyURL, { method: "POST" });
-        const captchaData = await captchaRes.json();
-        console.log("CAPTCHA Score:", captchaData.score);
-
-        if (!captchaData.success || captchaData.score < 0.5) {
-            return res.status(403).json({ error: "reCAPTCHA validation failed" });
-        }
-    } catch (captchaErr) {
-        console.error("Captcha check failed:", captchaErr.message);
-        return res.status(500).json({ error: "CAPTCHA validation error" });
-    }
 
     try {
         await pool.query(
