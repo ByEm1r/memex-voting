@@ -5,11 +5,16 @@ let isAdmin = false;
 const ADMIN_WALLET = "xadminmemexgiris30T";
 const ADMIN_PASS = "memexsifre123";
 
-// Admin şifre alanını göster/gizle
-const walletInput = document.getElementById("wallet");
-walletInput.addEventListener("input", () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const walletInput = document.getElementById("wallet");
     const pass = document.getElementById("admin-pass");
-    pass.style.display = walletInput.value.trim() === ADMIN_WALLET ? "block" : "none";
+
+    // Sayfa ilk açıldığında şifre alanı gizli kalsın
+    pass.style.display = "none";
+
+    walletInput.addEventListener("input", () => {
+        pass.style.display = walletInput.value.trim() === ADMIN_WALLET ? "block" : "none";
+    });
 });
 
 // Tema değiştirme
