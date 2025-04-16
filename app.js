@@ -58,7 +58,7 @@ async function login() {
     }
 
     grecaptcha.ready(async () => {
-        const captcha = await grecaptcha.execute('6LckFhsrAAAAADYYP9VpEGqGzodMNymbQ8275jhE', { action: 'login' });
+        const captcha = await grecaptcha.execute('6LfHHxsrAAAAANwhOTYVTh3Q9XNpVV68c4GdhH-I', { action: 'login' });
         console.log("captcha:", captcha);
 
         if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
@@ -401,5 +401,18 @@ function sharePoll(id) {
     const shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(shareURL, "_blank", "width=550,height=450");
 }
+// Sayfa açıldığında otomatik reCAPTCHA token iste (Google'a kullanım sinyali)
+window.onload = function () {
+    if (window.grecaptcha) {
+        grecaptcha.ready(() => {
+            grecaptcha.execute('6LfHHxsrAAAAANwhOTYVTh3Q9XNpVV68c4GdhH-I', { action: 'homepage' }).then(token => {
+                console.log("Otomatik token alındı ✅", token);
+            });
+        });
+    } else {
+        console.warn("grecaptcha henüz yüklenmedi ❌");
+    }
+};
+
 
 
