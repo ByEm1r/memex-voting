@@ -28,8 +28,10 @@ app.use(limiter);
 
 // PostgreSQL
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // Bu satır Render için gerekli
 });
+
 
 // Token kontrolü
 function verifyToken(req, res, next) {
