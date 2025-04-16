@@ -58,7 +58,7 @@ async function login() {
     }
 
     grecaptcha.ready(async () => {
-        const captcha = await grecaptcha.execute('6LdN5RkrAAAAAK9BReXZhOXUnURMIjaRKh6cNSmj', { action: 'login' });
+        const captcha = await grecaptcha.execute('6LckFhsrAAAAADYYP9VpEGqGzodMNymbQ8275jhE', { action: 'login' });
         console.log("captcha:", captcha);
 
         if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
