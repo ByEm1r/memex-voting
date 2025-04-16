@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MEMEX Voting App</title>
+
+    <!-- reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdN5RkrAAAAAK9BReXZhOXUnURMIjaRKh6cNSmj"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 🎉 Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+    <div class="login-area" id="login-area">
+        <img src="memex-banner.png" alt="MEMEX Banner" style="width:100%;border-radius:12px;margin-bottom:16px;" />
+        <h2>Welcome to MEMEX</h2>
+        <input type="text" id="wallet" placeholder="Your Wallet Address" />
+        <input type="password" id="admin-pass" placeholder="Admin Password" />
+
+        <button class="login-btn" onclick="login()">Enter Voting Platform</button>
+        <div class="social-buttons">
+            <a href="https://x.com/memexairdrop" target="_blank" class="x-btn">🔷 X</a>
+            <a href="https://t.me/MemeXGloball" target="_blank" class="tg-btn">📢 Telegram</a>
+            <a href="https://memextoken.org/" target="_blank" class="web-btn">🌐 Website</a>
+        </div>
+    </div>
+
+
+    <div id="create-section">
+        <h3>Create New Poll</h3>
+        <input type="text" id="new-question" placeholder="Poll Question" />
+        <textarea id="new-description" placeholder="Poll Description (optional)"></textarea>
+        <input type="text" id="new-image" placeholder="Image URL (optional)" />
+        <input type="datetime-local" id="new-start" />
+        <input type="datetime-local" id="new-end" />
+        <div id="option-wrapper"></div>
+        <button onclick="createPoll()">Submit</button>
+    </div>
+    <h1 id="main-title" class="main-title" style="display: none;">
+        <span class="emoji">🗳️</span> Community Decision-Making <br>
+        <span class="memex-word">MEMEX</span>
+    </h1>
+    <div id="polls" style="margin-top: 40px;"></div>
+
+    <div id="admin-stats" style="display:none;margin-top:20px"></div>
+</div>
+
+<footer style="text-align:center;margin-top:40px;font-size:13px;color:#aaa">
+    © 2025 MemeX. All rights reserved.<br>
+    🚀 Powered by Electra Protocol, ensuring the lowest fees, fastest transactions, and ultimate security
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
