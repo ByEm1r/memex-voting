@@ -152,34 +152,48 @@ app.post(
     verifyToken,
     body("question").notEmpty().withMessage("Question is required"),
     async (req, res) => {
-        if (!isAdmin(req.walletAddress)) return res.status(403).json({ error: "Only admin can create polls" });
+        if (!isAdmin(req.walletAddress)) {
+            return res.status(403).json({ error: "Only admin can create polls" });
+        }
 
         const errors = validationResult(req);
-        if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ error: errors.array()[0].msg });
+        }
 
-        // ✅ options artık alınıyor
-        const { question, description, image_url, start_time, end_time, options } = req.body;
+        const {
+            question,
+            description,
+            image_url,
+            start_time,
+            end_time,
+            options
+        } = req.body;
 
-        // ✅ en az iki şık kontrolü
+        // ✅ Seçenekler kontrolü
         if (!Array.isArray(options) || options.length < 2) {
             return res.status(400).json({ error: "En az iki seçenek girilmeli." });
         }
 
+        // ✅ PostgreSQL TEXT[] formatına uygun çeviri
+        const formattedOptions = `{${options.map(opt => `"${opt}"`).join(",")}}`;
+
         try {
             const result = await pool.query(
-                `INSERT INTO polls 
-                (question, description, image_url, start_time, end_time, options) 
-                VALUES ($1, $2, $3, $4, $5, $6) 
-                RETURNING id`,
+                `INSERT INTO polls
+                     (question, description, image_url, start_time, end_time, options)
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                     RETURNING id`,
                 [
                     question,
                     description,
                     image_url || null,
                     start_time || new Date(),
                     end_time || null,
-                    JSON.stringify(options) // 🔥 burada JSONB olarak ekliyoruz
+                    formattedOptions // ✅ JSON değil, PostgreSQL array literal
                 ]
             );
+
             res.json({ pollId: result.rows[0].id });
         } catch (err) {
             console.error("Poll creation error:", err.message);
