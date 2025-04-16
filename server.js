@@ -55,13 +55,9 @@ function isAdmin(wallet) {
 app.post("/login", async (req, res) => {
     const { walletAddress } = req.body;
     if (!walletAddress) return res.status(400).json({ error: "Wallet required" });
-    const captcha = req.body.captcha;
-    if (!captcha) return res.status(400).json({ error: "Missing CAPTCHA token" });
 
-    // Google doğrulaması
-    // reCAPTCHA devre dışı (test modu)
+    // CAPTCHA devre dışı — test modu
     console.log("Skipping CAPTCHA verification for testing");
-
 
     try {
         await pool.query(
