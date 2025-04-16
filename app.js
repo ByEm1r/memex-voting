@@ -116,7 +116,7 @@ async function createPoll() {
         return showToast("Lütfen soru ve en az iki seçenek girin", "error");
     }
 
-    const res = await fetch("http://localhost:3001/createPoll", {
+    const res = await fetch("https://memex-voting.onrender.com/createPoll", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -171,7 +171,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // Anketleri yükle
 async function loadPolls() {
-    const res = await fetch("http://localhost:3001/polls");
+    const res = await fetch("https://memex-voting.onrender.com/polls");
     const data = await res.json();
     const container = document.getElementById("polls");
     container.innerHTML = "";
@@ -216,7 +216,7 @@ async function loadPolls() {
 
 // Anket sonuçlarını yükle
 async function loadResults(pollId) {
-    const res = await fetch(`http://localhost:3001/results/${pollId}`);
+    const res = await fetch(`https://memex-voting.onrender.com/results/${pollId}`);
     const data = await res.json();
     const ctx = document.getElementById(`chart-${pollId}`);
     new Chart(ctx, {
@@ -239,7 +239,7 @@ async function loadResults(pollId) {
 // Oy verme işlemi
 async function vote(pollId, option, btn) {
     btn.disabled = true;
-    const res = await fetch(`http://localhost:3001/vote`, {
+    const res = await fetch(`https://memex-voting.onrender.com/vote`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -317,7 +317,7 @@ async function submitEdit(id) {
     const start_time = document.getElementById("edit-start").value;
     const end_time = document.getElementById("edit-end").value;
 
-    const res = await fetch(`http://localhost:3001/editPoll/${id}`, {
+    const res = await fetch(`https://memex-voting.onrender.com/editPoll/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -340,7 +340,7 @@ async function submitEdit(id) {
 async function deletePoll(id) {
     if (!confirm("Bu anketi silmek istediğinize emin misiniz?")) return;
 
-    const res = await fetch(`http://localhost:3001/deletePoll/${id}`, {
+    const res = await fetch(`hhttps://memex-voting.onrender.com/deletePoll/${id}`, {
         method: "DELETE",
         headers: {
             Authorization: "Bearer " + token
@@ -358,7 +358,7 @@ async function deletePoll(id) {
 
 // İstatistikleri göster
 async function viewStats(id) {
-    const res = await fetch(`http://localhost:3001/results/${id}`);
+    const res = await fetch(`https://memex-voting.onrender.com/results/${id}`);
     const data = await res.json();
 
     const content = `
@@ -372,7 +372,7 @@ async function viewStats(id) {
 
 // Admin için tüm anket istatistikleri
 async function loadStats() {
-    const res = await fetch("http://localhost:3001/stats", {
+    const res = await fetch("https://memex-voting.onrender.com/stats", {
         headers: {
             Authorization: "Bearer " + token
         }
