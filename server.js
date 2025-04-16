@@ -56,15 +56,17 @@ app.post("/login", async (req, res) => {
     const { walletAddress } = req.body;
     if (!walletAddress) return res.status(400).json({ error: "Wallet required" });
 
-    // CAPTCHA devre dışı — test modu
-    console.log("Skipping CAPTCHA verification for testing");
+    // CAPTCHA kontrolü yapılmadan işlem devam ediyor
+    console.log("Skipping CAPTCHA verification");
 
     try {
+        // Kullanıcıyı veritabanına ekliyoruz (önceden var ise eklemiyoruz)
         await pool.query(
             "INSERT INTO users (wallet_address) VALUES ($1) ON CONFLICT DO NOTHING",
             [walletAddress]
         );
 
+        // JWT token oluşturuyoruz
         const token = jwt.sign({ walletAddress }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.json({ success: true, token });
     } catch (err) {

@@ -1,14 +1,6 @@
 let token = "";
 let isAdmin = false;
 
-// reCAPTCHA test kontrolü
-window.addEventListener("load", () => {
-    if (window.grecaptcha) {
-        console.log("✅ grecaptcha yüklendi:", window.grecaptcha);
-    } else {
-        console.error("❌ grecaptcha YÜKLENMEDİ! Script yanlış yerde olabilir.");
-    }
-});
 
 // Admin cüzdan adresi
 const ADMIN_WALLET = "xadminmemexgiris30T";
@@ -62,7 +54,6 @@ async function login() {
     const wallet = document.getElementById("wallet").value.trim();
     const adminPass = document.getElementById("admin-pass").value;
 
-    const captcha = "bypass-captcha"; // ✅ reCAPTCHA olmadan login yapabilmek için
 
     if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
         return showToast("Wrong admin password", "error");
@@ -76,7 +67,7 @@ async function login() {
         const res = await fetch("https://cdm.memextoken.org/login", { // ✅ DOMAIN GÜNCEL
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ walletAddress: wallet, captcha })
+            body: JSON.stringify({ walletAddress: wallet, })
         });
 
         const data = await res.json();
@@ -403,18 +394,7 @@ function sharePoll(id) {
     const shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(shareURL, "_blank", "width=550,height=450");
 }
-// Sayfa açıldığında otomatik reCAPTCHA token iste (Google'a kullanım sinyali)
-window.onload = function () {
-    if (window.grecaptcha) {
-        grecaptcha.ready(() => {
-            grecaptcha.execute('6LfHHxsrAAAAANwhOTYVTh3Q9XNpVV68c4GdhH-I', { action: 'homepage' }).then(token => {
-                console.log("Otomatik token alındı ✅", token);
-            });
-        });
-    } else {
-        console.warn("grecaptcha henüz yüklenmedi ❌");
-    }
-};
+
 
 
 
