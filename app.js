@@ -176,6 +176,7 @@ async function loadPolls() {
     container.innerHTML = "";
 
     for (const poll of data) {
+        console.log("Anket Verisi:", poll);
         const startDate = new Date(poll.start_time);
         const endDate = new Date(poll.end_time);
         const now = new Date();
@@ -187,7 +188,10 @@ async function loadPolls() {
         div.innerHTML = `
             <h3>${poll.question}</h3>
             ${poll.description ? `<p>${poll.description}</p>` : ""}
-            ${poll.image_url ? `<img src="${poll.image_url}" alt="Anket Görseli" />` : ""}
+            ${poll.image_url ? `
+  <img src="${poll.image_url}" alt="Anket Görseli" 
+       onerror="this.style.display='none'" 
+       style="max-width:100%;border-radius:10px;margin-top:10px;" />` : ""}
             <p class="poll-duration"><strong>Süre:</strong> ${startDate.toLocaleString()} - ${endDate.toLocaleString()}</p>
            ${!isActive
             ? `<p class="poll-ended">⏰ This poll has ended.</p>`
@@ -394,6 +398,8 @@ function sharePoll(id) {
     const shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(shareURL, "_blank", "width=550,height=450");
 }
+// Butonlara tıklamaları yöneten tek el handler
+document.getElementById("polls").addEventListener("click", handlePollButtonClick);
 
 
 
