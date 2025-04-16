@@ -64,6 +64,7 @@ app.post("/login", async (req, res) => {
     try {
         const captchaRes = await fetch(verifyURL, { method: "POST" });
         const captchaData = await captchaRes.json();
+        console.log("CAPTCHA Score:", captchaData.score);
 
         if (!captchaData.success || captchaData.score < 0.5) {
             return res.status(403).json({ error: "reCAPTCHA validation failed" });
