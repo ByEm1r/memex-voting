@@ -27,7 +27,6 @@ app.use(
 );
 
 // Middleware
-app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 

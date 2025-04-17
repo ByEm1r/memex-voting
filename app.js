@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Tema değiştirme
 function toggleTheme() {
+    console.log("🎨 Tema değiştiriliyor");
     const current = document.documentElement.getAttribute("data-theme");
     document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
 }
@@ -51,8 +52,11 @@ function showToast(msg, type = "success") {
 
 // Giriş (Admin + Kullanıcı)
 async function login() {
+    console.log("🟢 login fonksiyonu çalıştı!");
+
     const wallet = document.getElementById("wallet").value.trim();
     const adminPass = document.getElementById("admin-pass").value;
+
 
 
     if (wallet === "xadminmemexgiris30T" && adminPass !== "memexsifre123") {
@@ -99,6 +103,7 @@ async function login() {
 
 // Yeni anket oluştur
 async function createPoll() {
+    console.log("🟢 createPoll fonksiyonu çalıştı!");
     const question = document.getElementById("new-question").value;
     const description = document.getElementById("new-description").value;
     const image_url = document.getElementById("new-image").value;
@@ -335,9 +340,14 @@ function editPoll(id) {
         <input type="text" id="edit-image" placeholder="Yeni Görsel URL" />
         <input type="datetime-local" id="edit-start" />
         <input type="datetime-local" id="edit-end" />
-        <button id="submitEditBtn-${id}">💾 Kaydet</button>
+        <button id="submitEditBtn">💾 Kaydet</button>
     `;
     createModal(content);
+
+    // ✅ Bu satırı mutlaka ekle
+    setTimeout(() => {
+        document.getElementById("submitEditBtn").addEventListener("click", () => submitEdit(id));
+    }, 0);
 }
 
 // Güncellemeyi gönder
@@ -403,7 +413,7 @@ async function viewStats(id) {
 
 // Admin için tüm anket istatistikleri
 async function loadStats() {
-    const res = await fetch("/stats", {
+    const res = await fetch("/admin/stats", {
         headers: {
             Authorization: "Bearer " + token
         }
@@ -413,7 +423,9 @@ async function loadStats() {
     const content = `
         <h3>Toplam Anket İstatistikleri</h3>
         <ul>
-            ${data.map(poll => `<li>${poll.question}: ${poll.totalVotes} oy</li>`).join("")}
+            <li>Toplam Oy: ${data.stats.totalVotes}</li>
+            <li>Toplam Kullanıcı: ${data.stats.totalUsers}</li>
+            <li>Toplam Anket: ${data.stats.totalPolls}</li>
         </ul>
     `;
     createModal(content);
@@ -426,8 +438,6 @@ function sharePoll(id) {
     const shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(shareURL, "_blank", "width=550,height=450");
 }
-// Butonlara tıklamaları yöneten tek el handler
-document.getElementById("polls").addEventListener("click", handlePollButtonClick);
 
 
 
