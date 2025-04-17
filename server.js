@@ -1,7 +1,6 @@
 // server.js (Geliştirilmiş ve Güvenli Backend)
 
 require("dotenv").config();
-app.set('trust proxy', true);
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +13,7 @@ const { body, validationResult } = require("express-validator");
 
 const app = express();
 const port = process.env.PORT || 3001;
+app.set("trust proxy", true);
 
 app.use(
     helmet({
