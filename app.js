@@ -308,6 +308,20 @@ function playVoteEffect() {
 
 // Modal oluşturucu
 function createModal(content) {
+    // Arka plan için overlay div
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.4);
+        z-index: 9998;
+    `;
+
+    // Modal kutusu
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.style.cssText = `
@@ -324,10 +338,19 @@ function createModal(content) {
         width: 90%;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     `;
+
     modal.innerHTML = `
-        <button onclick="this.closest('.modal').remove()">❌ Kapat</button>
+        <button id="closeModalBtn" style="float:right;margin-bottom:10px;">❌ Kapat</button>
         ${content}
     `;
+
+    // Kapat butonunu bağla
+    modal.querySelector("#closeModalBtn").addEventListener("click", () => {
+        overlay.remove();
+        modal.remove();
+    });
+
+    document.body.appendChild(overlay);
     document.body.appendChild(modal);
 }
 
