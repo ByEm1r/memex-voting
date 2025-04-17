@@ -174,87 +174,8 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // Anketleri yükle
-async function loadPolls() {
-    const res = await fetch("/polls");
-    const data = await res.json();
-    const container = document.getElementById("polls");
-    container.innerHTML = "";
-
-    for (const poll of data) {
-        console.log("Anket Verisi:", poll);
-        const startDate = new Date(poll.start_time);
-        const endDate = new Date(poll.end_time);
-        const now = new Date();
-        const isActive = now >= startDate && now <= endDate;
-
-        const div = document.createElement("div");
-        div.className = "poll";
-        div.id = `poll-${poll.id}`;
-        div.innerHTML = `
-            <h3>${poll.question}</h3>
-            ${poll.description ? `<p>${poll.description}</p>` : ""}
-            ${poll.image_url ? `
-  <img src="${poll.image_url}" alt="Anket Görseli" 
-       onerror="this.style.display='none'" 
-       style="max-width:100%;border-radius:10px;margin-top:10px;" />` : ""}
-            <p class="poll-duration"><strong>Süre:</strong> ${startDate.toLocaleString()} - ${endDate.toLocaleString()}</p>
-           ${!isActive
-            ? `<p class="poll-ended">⏰ This poll has ended.</p>`
-            : (poll.options || []).map(option => `
-    <button class="vote-btn" data-id="${poll.id}" data-option="${option}">
-        🗳️ ${option}
-    </button>
-`).join("")
-        }
 
 
-            <canvas id="chart-${poll.id}" height="100"></canvas>
-           <button class="action-btn" data-action="share" data-id="${poll.id}">📤 Share</button>
-${isAdmin ? `
-<div class="admin-controls">
-    <button class="action-btn" data-action="edit" data-id="${poll.id}">✏️ Düzenle</button>
-    <button class="action-btn" data-action="delete" data-id="${poll.id}">🗑️ Sil</button>
-    <button class="action-btn" data-action="stats" data-id="${poll.id}">📊 İstatistikler</button>
-</div>` : ""}
-        `;
-        container.appendChild(div);
-
-        try {
-            await loadResults(poll.id);
-        } catch (err) {
-            console.warn("📉 Grafik yüklenemedi:", err.message);
-        }
-
-// ✅ Oy verme butonları (🗳️)
-        div.querySelectorAll(".vote-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const pollId = btn.getAttribute("data-id");
-                const option = btn.getAttribute("data-option");
-                vote(pollId, option, btn); // ⬅️ Oy verme fonksiyonu
-            });
-        });
-
-// ✅ Sadece bu div içindeki butonlara event ekle
-        div.querySelectorAll(".action-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const action = btn.getAttribute("data-action");
-                const pollId = btn.getAttribute("data-id");
-
-                console.log("🟢 Butona tıklandı:", action, pollId);
-
-                if (action === "edit") {
-                    editPoll(pollId);
-                } else if (action === "delete") {
-                    deletePoll(pollId);
-                } else if (action === "stats") {
-                    viewStats(pollId);
-                } else if (action === "share") {
-                    sharePoll(pollId);
-                }
-            });
-        });
-    }
-}
 // Anket sonuçlarını yükle
 async function loadResults(pollId) {
     const res = await fetch(`/results/${pollId}`);
