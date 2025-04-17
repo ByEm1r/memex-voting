@@ -277,9 +277,13 @@ async function loadResults(pollId) {
         }
     });
 }
-// Oy verme işlemi
 async function vote(pollId, option, btn) {
     btn.disabled = true;
+
+    // ✅ LOG EKLİYORUZ
+    console.log("🟢 Oy gönderiliyor:", pollId, option);
+    console.log("🟢 Token:", token);
+
     const res = await fetch(`/vote`, {
         method: "POST",
         headers: {
