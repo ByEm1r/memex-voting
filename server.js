@@ -1,6 +1,7 @@
 // server.js (Geliştirilmiş ve Güvenli Backend)
 
 require("dotenv").config();
+app.set('trust proxy', true);
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const express = require("express");
 const cors = require("cors");

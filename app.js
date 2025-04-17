@@ -218,7 +218,12 @@ ${isAdmin ? `
 </div>` : ""}
         `;
         container.appendChild(div);
-        await loadResults(poll.id);
+
+        try {
+            await loadResults(poll.id);
+        } catch (err) {
+            console.warn("📉 Grafik yüklenemedi:", err.message);
+        }
 
 // ✅ Oy verme butonları (🗳️)
         div.querySelectorAll(".vote-btn").forEach(btn => {
