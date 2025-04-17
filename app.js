@@ -230,6 +230,8 @@ ${isAdmin ? `
                 const action = btn.getAttribute("data-action");
                 const pollId = btn.getAttribute("data-id");
 
+                console.log("🟢 Butona tıklandı:", action, pollId);
+
                 if (action === "edit") {
                     editPoll(pollId);
                 } else if (action === "delete") {
@@ -387,7 +389,7 @@ async function deletePoll(id) {
 
 // İstatistikleri göster
 async function viewStats(id) {
-    const res = await fetch(`/results/${pollId}`);
+    const res = await fetch(`/results/${id}`);
     const data = await res.json();
 
     const content = `
