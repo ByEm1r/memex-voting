@@ -85,7 +85,7 @@ async function login() {
             if (isAdmin) {
                 document.getElementById("create-section").style.display = "block";
                 renderOptionInputs();
-                loadStats();
+
             } else {
                 document.getElementById("create-section").style.display = "none";
             }
@@ -434,25 +434,6 @@ async function viewStats(id) {
     createModal(content);
 }
 
-// Admin için tüm anket istatistikleri
-async function loadStats() {
-    const res = await fetch("/admin/stats", {
-        headers: {
-            Authorization: "Bearer " + token
-        }
-    });
-    const data = await res.json();
-
-    const content = `
-        <h3>Toplam Anket İstatistikleri</h3>
-        <ul>
-            <li>Toplam Oy: ${data.stats.totalVotes}</li>
-            <li>Toplam Kullanıcı: ${data.stats.totalUsers}</li>
-            <li>Toplam Anket: ${data.stats.totalPolls}</li>
-        </ul>
-    `;
-    createModal(content);
-}
 
 // Twitter'da paylaşım
 function sharePoll(id) {
